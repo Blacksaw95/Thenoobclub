@@ -1,11 +1,11 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class HurtPlayer : MonoBehaviour {
 
     public int damageToGive;
-
+    public GameObject damageNumber;
 
     // Use this for initialization
     void Start()
@@ -27,6 +27,10 @@ public class HurtPlayer : MonoBehaviour {
         if (other.gameObject.name == "Player")
         {
             other.gameObject.GetComponent<PlayerHealthManager>().HurtPlayer(damageToGive);
+
+            var clone = (GameObject)Instantiate(damageNumber, other.transform.position, Quaternion.Euler(Vector3.zero));
+            clone.GetComponent<FloatingNumbers>().damageNumber = damageToGive;
+            clone.transform.position = new Vector2(transform.position.x, transform.position.y);
 
         }
     }
