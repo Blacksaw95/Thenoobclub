@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -8,8 +8,15 @@ public class LoadNewArea : MonoBehaviour
 
 {
     public string levelToLoad;
+
+    public string exitPoint;
+
+    private PlayerController thePlayer;
+
 	// Use this for initialization
 	void Start () {
+
+        thePlayer = FindObjectOfType<PlayerController>();
 		
 	}
 	
@@ -23,6 +30,7 @@ public class LoadNewArea : MonoBehaviour
         if (other.gameObject.name == "Player")
         {
           SceneManager.LoadScene(levelToLoad);
+            thePlayer.startPoint = exitPoint;
         }
     }
 
