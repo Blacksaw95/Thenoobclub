@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,11 +11,15 @@ public class PlayerController : MonoBehaviour {
 
     private bool playerMoving;
     public Vector2 lastMove;
+    private Vector2 moveInput;
 
     private static bool playerExists;
     private bool attacking;
     public float attackTime;
     private float attackTimeCounter;
+
+    public string startPoint;
+    public bool canMove;
 
 	// Use this for initialization
 	void Start () {
@@ -31,6 +35,8 @@ public class PlayerController : MonoBehaviour {
              Destroy(gameObject);
         }
 
+        canMove = true;
+        lastMove = new Vector2(0, -1f);
         
 	}
 
@@ -39,42 +45,40 @@ public class PlayerController : MonoBehaviour {
     {
         playerMoving = false;
 
+        if(!canMove)
+        {
+            myRigidbody.velocity = Vector2.zero;
+            return;
+        }
+
         if (!attacking)
         {
 
+            moveInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")).normalized;
 
-            if (Input.GetAxisRaw("Horizontal") > 0.5f || Input.GetAxisRaw("Horizontal") < -0.5f)
+            if(moveInput != Vector2.zero)
+
             {
-                //transform.Translate (new Vector3(Input.GetAxisRaw("Horizontal") * moveSpeed * Time.deltaTime, 0f, 0f));
-                myRigidbody.velocity = new Vector2(Input.GetAxisRaw("Horizontal") * moveSpeed, myRigidbody.velocity.y);
+                myRigidbody.velocity = new Vector2(moveInput.x * moveSpeed, moveInput.y * moveSpeed);
                 playerMoving = true;
-                lastMove = new Vector2(Input.GetAxisRaw("Horizontal"), 0f);
+                lastMove = moveInput;
             }
 
-            if (Input.GetAxisRaw("Vertical") > 0.5f || Input.GetAxisRaw("Vertical") < -0.5f)
-            {
-                //transform.Translate(new Vector3(0f, Input.GetAxisRaw("Vertical") * moveSpeed * Time.deltaTime, 0f));
-                myRigidbody.velocity = new Vector2(myRigidbody.velocity.x, Input.GetAxisRaw("Vertical") * moveSpeed);
-                playerMoving = true;
-                lastMove = new Vector2(0f, Input.GetAxisRaw("Vertical"));
-            }
+            else
 
-            if (Input.GetAxisRaw("Horizontal") < 0.5f && Input.GetAxisRaw("Horizontal") > -0.5f)
             {
-                myRigidbody.velocity = new Vector2(0f, myRigidbody.velocity.y);
-            }
-            if (Input.GetAxisRaw("Vertical") < 0.5f && Input.GetAxisRaw("Vertical") > -0.5f)
-            {
-                myRigidbody.velocity = new Vector2(myRigidbody.velocity.x, 0f);
+                myRigidbody.velocity = Vector2.zero;
             }
 
             if (Input.GetKeyDown(KeyCode.J))
+
             {
                 attackTimeCounter = attackTime;
                 attacking = true;
                 myRigidbody.velocity = Vector2.zero;
                 anim.SetBool("Attack", true);
             }
+
         }
 
         if(attackTimeCounter >= 0)
